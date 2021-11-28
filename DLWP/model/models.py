@@ -10,7 +10,7 @@ High-level APIs for building a DLWP model based on Keras and scikit-learn.
 
 import numpy as np
 from tensorflow.keras import models
-from tensorflow.keras.utils import multi_gpu_model
+#from tensorflow.keras.utils import multi_gpu_model
 
 from .generators import DataGenerator, SeriesDataGenerator, ArrayDataGenerator
 from .. import util
@@ -106,11 +106,14 @@ class DLWPNeuralNet(object):
             import tensorflow as tf
             with tf.device('/cpu:0'):
                 self.base_model = models.clone_model(self.base_model)
-            self.model = multi_gpu_model(self.base_model, gpus=gpus)
+#            self.model = multi_gpu_model(self.base_model, gpus=gpus)
+            strategy = tf.distribute.MirroredStrategy()
+            with strategy.scope():
+                self.model.compile(**compile_kwargs)
             self.gpus = gpus
         else:
             self.model = self.base_model
-        self.model.compile(**compile_kwargs)
+            self.model.compile(**compile_kwargs)
 
     @staticmethod
     def _reshape(a, ret=False):
@@ -370,11 +373,14 @@ class DLWPFunctional(object):
             import tensorflow as tf
             with tf.device('/cpu:0'):
                 self.base_model = models.clone_model(self.base_model)
-            self.model = multi_gpu_model(self.base_model, gpus=gpus)
+#            self.model = multi_gpu_model(self.base_model, gpus=gpus)
+            strategy = tf.distribute.MirroredStrategy()
+            with strategy.scope():
+                self.model.compile(**compile_kwargs)
             self.gpus = gpus
         else:
             self.model = self.base_model
-        self.model.compile(**compile_kwargs)
+            self.model.compile(**compile_kwargs)
 
     def scaler_transform(self, X, y=None):
         """

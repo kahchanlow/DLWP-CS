@@ -17,7 +17,7 @@ from copy import copy
 import numpy as np
 import pandas as pd
 from tensorflow.keras import models as keras_models
-from tensorflow.keras.utils import multi_gpu_model
+#from tensorflow.keras.utils import multi_gpu_model
 
 
 # ==================================================================================================================== #
@@ -179,7 +179,7 @@ def load_model(file_name, history=False, custom_objects=None, gpus=1):
         with tf.device('/cpu:0'):
             model.base_model = keras_models.clone_model(loaded_model)
             model.base_model.set_weights(loaded_model.get_weights())
-        model.model = multi_gpu_model(model.base_model, gpus=gpus)
+        model.model = model.base_model
         model.gpus = gpus
     else:
         model.base_model = loaded_model
